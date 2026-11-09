@@ -1,0 +1,362 @@
+# EXPERIMENT NO.: 11
+
+## AIM
+To write a simple program in JavaScript and perform testing using Selenium.
+
+## SOFTWARE REQUIRED
+1. HTML and JavaScript
+2. Google Chrome browser
+3. Node.js and npm
+4. Selenium WebDriver
+5. Visual Studio Code
+
+## PROGRAM
+
+**Step 1: Create an HTML file named `index.html`.**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple JavaScript Program</title>
+</head>
+<body>
+
+    <p id="output">0</p>
+    <button id="increment-button">Increment</button>
+
+    <script>
+        const output = document.getElementById("output");
+        const incrementButton =
+            document.getElementById("increment-button");
+
+        let count = 0;
+
+        incrementButton.addEventListener("click", function() {
+            count += 1;
+            output.innerHTML = count;
+        });
+    </script>
+
+</body>
+</html>
+```
+
+## PROCEDURE
+1. Create an HTML file containing a paragraph and an Increment button.
+2. Initialize the counter to zero using JavaScript.
+3. Add a click event listener to the button.
+4. Increase the counter by one whenever the button is clicked.
+5. Install Node.js and Selenium WebDriver.
+6. Create a Selenium test script to open the HTML webpage.
+7. Locate the button and click it using Selenium.
+8. Verify that the counter displays the expected values.
+
+## EXPECTED OUTPUT
+
+Initially:
+
+```text
+0
+[Increment]
+```
+
+After clicking once:
+
+```text
+1
+[Increment]
+```
+
+After clicking twice:
+
+```text
+2
+[Increment]
+```
+
+## RESULT
+Thus, a simple JavaScript program was created and its functionality was tested successfully using Selenium WebDriver.
+
+
+
+
+Okay, Varsha! Let's execute Experiment No. 11 from absolute beginning, assuming Node.js, npm, Selenium and Google Chrome are already installed on your laptop.
+
+I'll guide you in the exact order. Follow each step on your laptop.
+
+# Experiment 11 — Practical execution
+
+## Step 1: Open Visual Studio Code
+
+1. Open Visual Studio Code.
+2. Click File in the top menu.
+3. Select Open Folder.
+4. Create a new folder on your Desktop named:
+
+`SeleniumExperiment11`
+
+5\. Select that folder and click Select Folder.
+
+Step 1 complete
+
+## Step 2: Create your HTML file
+
+Look at the left-side Explorer panel in VS Code.
+
+1. Click the New File icon.
+2. Name the file:
+
+`index.html`
+
+3\. Copy this entire program into that file:
+
+```
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple JavaScript Program</title>
+</head>
+<body>
+
+    <p id="output">0</p>
+    <button id="increment-button">Increment</button>
+
+    <script>
+        const output = document.getElementById("output");
+        const incrementButton =
+            document.getElementById("increment-button");
+
+        let count = 0;
+
+        incrementButton.addEventListener("click", function() {
+            count += 1;
+            output.innerHTML = count;
+        });
+    </script>
+
+</body>
+</html>
+
+```
+
+4\. Press Ctrl + S to save.
+
+Your folder should look like this:
+
+SeleniumExperiment11
+
+index.html
+
+## Step 3: Open the webpage
+
+Before Selenium testing, let's check whether your JavaScript program works.
+
+1. Open the `SeleniumExperiment11` folder on your Desktop.
+2. Double-click `index.html`.
+3. It should open in Google Chrome.
+
+You should see:
+
+Simple JavaScript Program
+
+# 0
+
+Increment
+
+Click the Increment button twice.
+
+The number should change:
+
+`0 → 1 → 2`
+
+If this works, your JavaScript program is correct.
+
+## Step 4: Open the VS Code terminal
+
+Now return to VS Code.
+
+1. Click Terminal in the top menu.
+2. Select New Terminal.
+3. Look at the bottom of your screen.
+
+You will see a terminal where you can enter commands.
+
+If you see PowerShell and it gives an npm execution-policy error, switch to Command Prompt using the terminal dropdown.
+
+## Step 5: Initialize your Node.js project
+
+Type this command:
+
+```
+npm init -y
+```
+
+Press Enter.
+
+What happens?
+
+- Node.js creates a file named `package.json`.
+- This file stores your project information and dependencies.
+
+## Step 6: Install Selenium WebDriver
+
+In the same terminal, type:
+
+```
+npm install selenium-webdriver
+```
+
+Press Enter.
+
+Wait until installation finishes.
+
+This installs the Selenium library that allows JavaScript to control Google Chrome.
+
+If you have already installed it in this folder, you don't need to install it again.
+
+## Step 7: Create the Selenium testing file
+
+Now return to the Explorer panel in VS Code.
+
+1. Click New File.
+2. Name it:
+
+`test.js`
+
+3\. Copy this entire code into it:
+
+```
+
+const { Builder, By } = require("selenium-webdriver");
+const assert = require("node:assert/strict");
+const path = require("node:path");
+const { pathToFileURL } = require("node:url");
+
+async function testCounter() {
+
+    const driver = await new Builder()
+        .forBrowser("chrome")
+        .build();
+
+    try {
+
+        const filePath = pathToFileURL(
+            path.resolve(__dirname, "index.html")
+        ).href;
+
+        await driver.get(filePath);
+
+        const output = await driver.findElement(By.id("output"));
+
+        const button = await driver.findElement(
+            By.id("increment-button")
+        );
+
+        assert.equal(await output.getText(), "0");
+        console.log("Initial value is 0");
+
+        await button.click();
+
+        assert.equal(await output.getText(), "1");
+        console.log("Counter becomes 1");
+
+        await button.click();
+
+        assert.equal(await output.getText(), "2");
+        console.log("Counter becomes 2");
+
+        console.log("All tests passed successfully!");
+
+    } finally {
+        await driver.quit();
+    }
+}
+
+testCounter().catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+});
+
+```
+
+Press Ctrl + S to save.
+
+## Step 8: Check your folder
+
+At this stage, your project folder should look something like this:
+
+SeleniumExperiment11
+
+index.html
+
+Created
+
+test.js
+
+Created
+
+package.json
+
+node_modules
+
+## Step 9: Execute the Selenium program
+
+Final execution
+
+Go to the VS Code terminal.
+
+Type:
+
+```
+node test.js
+```
+
+Press Enter.
+
+Now observe:
+
+1. Chrome opens automatically.
+2. Selenium loads your `index.html`.
+3. Selenium checks the initial value `0`.
+4. Selenium clicks Increment.
+5. Selenium checks whether the value becomes `1`.
+6. Selenium clicks again.
+7. Selenium checks whether the value becomes `2`.
+8. Chrome closes after testing.
+
+Your terminal should display:
+
+```
+Initial value is 0
+Counter becomes 1
+Counter becomes 2
+All tests passed successfully!
+```
+
+That's it! Your Experiment No. 11 is executed.
+
+## Let's do it together, one step at a time.
+
+I don't want you to get confused by doing all the steps at once.
+
+Your current progress
+
+I haven't created the folder yet.
+
+I created the folder and opened it in VS Code.
+
+I created `index.html` and saved the code.
+
+I opened Chrome and the counter works.
+
+Both files are ready. I want to run Selenium.
+
+Continue from my current step
+
+We'll make sure you get the successful Selenium output on your laptop before moving on.
+
+
+
+
