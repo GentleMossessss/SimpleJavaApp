@@ -1,0 +1,371 @@
+JEmkins  
+Okay, Varsha! I understand now. You want me to teach you the entire practical execution from the very beginning, starting immediately after creating the project folder, including exactly what to click, what to type in the terminal, what output to expect, and what each command does.
+
+We'll do it as a real lab practical. I'll give you one stage at a time. You execute it, show me the result, and then I'll give you the next stage.
+
+We won't jump ahead.
+
+# Experiment 5 — Jenkins CI/CD Practical
+
+## Stage 1: Create the project in VS Code
+
+### Step 1. Create a project folder
+
+1. Open File Explorer.
+2. Go to Documents.
+3. Create a folder named `SimpleJavaApp`.
+4. Open VS Code.
+5. Select File → Open Folder.
+6. Select `SimpleJavaApp`.
+
+### Step 2. Create the `src` folder
+
+In the VS Code Explorer:
+
+1. Right-click `SimpleJavaApp`.
+2. Select New Folder.
+3. Name it `src`.
+
+### Step 3. Create `Main.java`
+
+1. Right-click `src`.
+2. Select New File.
+3. Name it `Main.java`.
+4. Paste this program:
+
+```
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+
+        int a = 5, b = 7;
+        int sum = a + b;
+
+        System.out.println("Sum: " + sum);
+    }
+}
+```
+
+5\. Press `Ctrl + S`.
+
+## Stage 2: Compile and execute the Java program
+
+Now we will use the terminal.
+
+### Step 4. Open the terminal
+
+In VS Code, click:
+
+Terminal → New Terminal
+
+Your terminal should show a path ending in something like:
+
+```
+C:\Users\YourName\Documents\SimpleJavaApp
+```
+
+If it doesn't, run:
+
+```
+cd "$env:USERPROFILE\Documents\SimpleJavaApp"
+```
+
+### Step 5. Check Java
+
+Execute these commands separately:
+
+```
+java -version
+```
+
+```
+javac -version
+```
+
+Both should display their versions.
+
+### Step 6. Enter the source folder
+
+```
+cd src
+```
+
+### Step 7. Compile the Java program
+
+```
+javac Main.java
+```
+
+This converts `Main.java` into a compiled file called `Main.class`.
+
+### Step 8. Execute the program
+
+```
+java Main
+```
+
+Expected output
+
+```
+Hello, World!
+Sum: 12
+```
+
+To return to the main project folder, execute:
+
+```
+cd ..
+```
+
+## Stage 3: Create the build script
+
+### Step 9. Create `build.bat` using the terminal
+
+This time, we will not use the VS Code New File option.
+
+Make sure your terminal is in the `SimpleJavaApp` folder.
+
+Copy and execute this entire command:
+
+```
+@'
+@echo off
+echo Building Java App...
+if not exist out mkdir out
+javac -d out src\Main.java
+if errorlevel 1 exit /b 1
+echo Running Java App...
+java -cp out Main
+if errorlevel 1 exit /b 1
+echo Build and run completed.
+'@ | Set-Content -Encoding ascii build.bat
+```
+
+This automatically creates `build.bat` in the main project folder.
+
+### Step 10. Verify the file
+
+```
+dir
+```
+
+You should see:
+
+```
+SimpleJavaApp
+    src
+    build.bat
+```
+
+### Step 11. Execute the batch file
+
+```
+.\build.bat
+```
+
+Expected output
+
+```
+Building Java App...
+Running Java App...
+Hello, World!
+Sum: 12
+Build and run completed.
+```
+
+You should also see a new `out` folder containing `Main.class`.
+
+What did we accomplish?
+
+We automated Java compilation and execution using a batch file. Instead of typing separate Java commands every time, we can execute one script.
+
+# Stage 4: Git and GitHub
+
+We will upload the Java source code and build script to GitHub.
+
+### Step 12. Initialize Git
+
+Make sure you are in `SimpleJavaApp`.
+
+```
+git init
+```
+
+Expected message: Initialized empty Git repository (or reinitialized if you already initialized it).
+
+### Step 13. Set the branch name
+
+```
+git branch -M main
+```
+
+### Step 14. Add project files
+
+```
+git add src/Main.java build.bat
+```
+
+This stages the files for committing.
+
+### Step 15. Commit the project
+
+```
+git commit -m "Add Java application and build script"
+```
+
+If Git says there is nothing to commit because you already committed these files, that's fine.
+
+### Step 16. Connect GitHub
+
+Create a repository named `SimpleJavaApp` on GitHub.
+
+Copy your repository URL. For your existing repository, it is:
+
+```
+https://github.com/GentleMossessss/SimpleJavaApp.git
+```
+
+Connect it using:
+
+```
+git remote add origin https://github.com/GentleMossessss/SimpleJavaApp.git
+```
+
+If `origin` already exists, don't repeat this command; use:
+
+```
+git remote set-url origin https://github.com/GentleMossessss/SimpleJavaApp.git
+```
+
+### Step 17. Upload the code
+
+```
+git push -u origin main
+```
+
+Open your GitHub repository and refresh it.
+
+You should see:
+
+- `src/Main.java`
+- `build.bat`
+
+# Stage 5: Start Jenkins
+
+This is where we need to correct the Java compatibility issue.
+
+Your Jenkins version supports Java 21 or 25, whereas your current Java is 24. We should install JDK 21 and use it to run Jenkins. We do not need to uninstall Java 24.
+
+### Step 18. Install JDK 21
+
+Open a new PowerShell terminal and execute:
+
+```
+winget install EclipseAdoptium.Temurin.21.JDK
+```
+
+Follow the installation instructions.
+
+### Step 19. Locate the JDK 21 folder
+
+Run:
+
+```
+Get-ChildItem "C:\Program Files\Eclipse Adoptium"
+```
+
+You should see a folder beginning with `jdk-21`.
+
+We will use the exact folder name in the next command.
+
+### Step 20. Start Jenkins
+
+Once we confirm the installed folder, we will use a command like this:
+
+```
+& "C:\Program Files\Eclipse Adoptium\jdk-21...\bin\java.exe" -jar "$env:USERPROFILE\Downloads\jenkins.war"
+```
+
+The `jdk-21...` portion must be replaced with your actual folder name.
+
+Wait until Jenkins displays:
+
+```
+Jenkins is fully up and running
+```
+
+Then open:
+
+[Jenkins — localhost:8080](http://localhost:8080?utm_source=chatgpt.com)
+
+Keep the terminal running. Closing it will stop Jenkins.
+
+# Stage 6: Configure Jenkins
+
+After Jenkins starts, we will perform these operations:
+
+1. Unlock Jenkins using the initial administrator password.
+2. Install suggested plugins.
+3. Create an administrator account.
+4. Open the Jenkins dashboard.
+5. Select New Item.
+6. Enter `SimpleJavaApp-Build`.
+7. Select Freestyle project.
+8. Under Source Code Management, select Git.
+9. Enter your GitHub repository URL.
+10. Under Build Steps, select Execute Windows batch command.
+11. Enter:
+
+```
+call build.bat
+```
+
+12. Under Post-build Actions, select Archive the artifacts.
+13. Enter:
+
+```
+out/**/*.class
+```
+
+14. Save the job and click Build Now.
+15. Open Console Output and check the result.
+
+We'll do these only after Jenkins is running and configured.
+
+# Stage 7: Verify the final result
+
+Expected Jenkins Console Output
+
+```
+Building Java App...
+Running Java App...
+Hello, World!
+Sum: 12
+Build and run completed.
+
+Finished: SUCCESS
+```
+
+Build successful
+
+Jenkins should also archive:
+
+`out/Main.class`
+
+## Let's actually begin together
+
+Although we've already completed some of these steps in our earlier work, I've written the entire process in order so you can use it as your practical guide.
+
+For our live execution, let's start with Stage 1 and proceed one stage at a time.
+
+Where are you right now?
+
+I already have `SimpleJavaApp`, `Main.java`, and `build.bat`.
+
+I want to create everything from the beginning again.
+
+I want to continue from installing JDK 21.
+
+Start practical
+
+I'll wait for your result at every stage. We will not move forward until the current stage works. ❤️
